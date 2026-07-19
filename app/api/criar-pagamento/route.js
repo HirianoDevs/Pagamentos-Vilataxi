@@ -1,64 +1,84 @@
-export async function POST(req){
-
-try {
-
-const dados = await req.json();
-
-
-const resposta = await fetch(
-"https://paysuite.tech/api/v1/payments",
-{
-method:"POST",
-
-headers:{
-"Authorization":
-`Bearer ${process.env.PAYSUITE_TOKEN}`,
-
-"Content-Type":"application/json",
-"Accept":"application/json"
-},
-
-body:JSON.stringify({
-
-amount:dados.valor,
-
-reference:dados.referencia,
-
-description:dados.produto,
-
-return_url:
-"https://pagamentos-vilataxi.vercel.app/sucesso"
-
-})
-
-});
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
 
 
-const resultado = await resposta.text();
-
-
-console.log(resultado);
-
-
-return new Response(resultado,{
-status: resposta.status,
-headers:{
-"Content-Type":"application/json",
-"Access-Control-Allow-Origin":"*"
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders
+  });
 }
-});
 
 
-}catch(error){
+export async function POST(req) {
 
-return Response.json({
+  try {
 
-erro:error.message
+    const dados = await req.json();
 
-},{
-status:500
-});
 
-}
+    const resposta = await fetch(
+      "https://paysuite.tech/api/v1/payments",
+      {
+        method: "POST",
+
+        headers: {
+          "Authorization":
+          `Bearer ${process.env.PAYSUITE_TOKEN}`,
+
+          "Content-Type":
+          "application/json",
+
+          "Accept":
+          "application/json"
+        },
+
+        body: JSON.stringify({
+
+          amount: dados.valor,
+
+          reference: dados.referencia,
+
+          description: dados.produto,
+
+          return_url:
+          "https://pagamentos-vilataxi.vercel.app/sucesso"
+
+        })
+      }
+    );
+
+
+    const texto = await resposta.text();
+
+
+    return new Response(texto, {
+      status: resposta.status,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json"
+      }
+    });
+
+
+  } catch(error) {
+
+    return new Response(
+      JSON.stringify({
+        erro: error.message
+      }),
+      {
+        status:500,
+        headers:{
+          ...corsHeaders,
+          "Content-Type":"application/json"
+        }
+      }
+    );
+
+  }
 
 }
