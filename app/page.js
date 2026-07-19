@@ -1,8 +1,8 @@
 export default function Home() {
   return (
     <main>
-      <h1>Backend VilaTáxi PaySuite</h1>
-      <p>API online</p>
+      <h1>VilaTaxi Pagamentos</h1>
+      <p>Backend funcionando</p>
     </main>
   );
 }
