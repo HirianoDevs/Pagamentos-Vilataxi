@@ -1,37 +1,27 @@
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type"
+    }
+  });
+}
+
+
 export async function POST(req) {
 
   const dados = await req.json();
 
-  const resposta = await fetch(
-    "https://paysuite.tech/api/v1/payments",
-    {
-      method: "POST",
-      headers: {
-        "Authorization":
-        `Bearer ${process.env.PAYSUITE_TOKEN}`,
-
-        "Content-Type":
-        "application/json"
-      },
-
-      body: JSON.stringify({
-
-        amount: dados.valor,
-
-        description:
-        dados.produto,
-
-        reference:
-        dados.referencia
-
-      })
+  return Response.json({
+    sucesso: true,
+    recebido: dados
+  },
+  {
+    headers:{
+      "Access-Control-Allow-Origin":"*"
     }
-  );
+  });
 
-
-  const resultado =
-  await resposta.json();
-
-
-  return Response.json(resultado);
 }
